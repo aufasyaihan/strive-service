@@ -1,26 +1,27 @@
 {
-  "name": "strive-service",
-  "version": "1.0.0",
-  "description": "backend service of strive application",
-  "main": "index.ts",
-  "type": "module",
-  "scripts": {
-    "dev": "ts-node src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "aufa",
-  "license": "ISC",
-  "dependencies": {
-    "@prisma/client": "^6.15.0",
-    "@prisma/extension-accelerate": "^2.0.2",
-    "dotenv": "^17.2.2",
-    "express": "^5.1.0",
-    "typescript": "^5.9.2"
-  },
-  "devDependencies": {
-    "@types/express": "^5.0.3",
-    "@types/node": "^24.3.0",
-    "prisma": "^6.15.0",
-    "ts-node": "^10.9.2"
-  }
+    "name": "strive-service",
+    "version": "1.0.0",
+    "description": "backend service of strive application",
+    "main": "server.ts",
+    "type": "commonjs",
+    "scripts": {
+        "dev": "ts-node src/server.ts",
+        "build": "tsc",
+        "serve": "node dist/server.js"
+    },
+    "author": "aufa",
+    "license": "ISC",
+    "dependencies": {
+        "@prisma/client": "^6.15.0",
+        "@prisma/extension-accelerate": "^2.0.2",
+        "dotenv": "^17.2.2",
+        "express": "^5.1.0",
+        "typescript": "^5.9.2"
+    },
+    "devDependencies": {
+        "@types/express": "^5.0.3",
+        "@types/node": "^24.3.1",
+        "prisma": "^6.15.0",
+        "ts-node": "^10.9.2"
+    }
 }
