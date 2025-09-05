@@ -14,14 +14,14 @@ datasource db {
 }
 
 model Article {
-  id        String  @id @default(cuid())
-  title     String
-  content   String?
-  thumbnail String
-  author    User?   @relation(fields: [authorId], references: [id])
-  authorId  String?
-  updatedAt DateTime @updatedAt
-  publishedAt DateTime @default(now()) 
+  id          String   @id @default(cuid())
+  title       String
+  content     String?
+  thumbnail   String
+  author      User?    @relation(fields: [authorId], references: [id])
+  authorId    String?
+  updatedAt   DateTime @updatedAt
+  publishedAt DateTime @default(now())
 
   @@index([id])
 }
@@ -37,12 +37,14 @@ model Video {
 }
 
 model User {
-  id       String    @id @default(cuid())
-  email    String    @unique
-  name     String?
-  role     Role      @relation(fields: [roleId], references: [id])
-  roleId   String
-  articles Article[]
+  id        String    @id @default(cuid())
+  email     String    @unique
+  password  String
+  firstName String
+  lastName  String
+  role      Role      @relation(fields: [roleId], references: [id])
+  roleId    String
+  articles  Article[]
 
   @@index([id])
 }
@@ -51,4 +53,10 @@ model Role {
   id    String @id @default(cuid())
   name  String @unique
   users User[]
+}
+
+model Membership {
+  id    String @id @default(cuid())
+  type  String
+  price Float
 }

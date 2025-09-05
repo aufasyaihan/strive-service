@@ -22,7 +22,9 @@ async function main() {
     update: {},
     create: {
       email: 'alice@example.com',
-      name: 'Alice',
+      password: 'securepassword',
+      firstName: 'Alice',
+      lastName: 'Wonderland',
       role: { connect: { id: adminRole.id } },
     },
   })
@@ -31,7 +33,9 @@ async function main() {
     update: {},
     create: {
       email: 'bob@example.com',
-      name: 'Bob',
+      password: 'securepassword',
+      firstName: 'Bob',
+      lastName: 'Builder',
       role: { connect: { id: userRole.id } },
     },
   })
