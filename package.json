@@ -7,7 +7,8 @@
     "scripts": {
         "dev": "ts-node src/server.ts",
         "build": "tsc",
-        "serve": "node dist/server.js"
+        "serve": "node dist/server.js",
+        "migrate:fresh": "npx prisma db push --force-reset && npx prisma db seed"
     },
     "author": "aufa",
     "license": "ISC",

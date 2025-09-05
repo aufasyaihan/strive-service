@@ -1,114 +1,113 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Seeding database to match current schema...')
+    console.log("Seeding database to match current schema...");
 
-  const adminRole = await prisma.role.upsert({
-    where: { name: 'ADMIN' },
-    update: {},
-    create: { name: 'ADMIN' },
-  })
-  const userRole = await prisma.role.upsert({
-    where: { name: 'USER' },
-    update: {},
-    create: { name: 'USER' },
-  })
-  console.log('Upserted roles:', { adminRole: adminRole.name, userRole: userRole.name })
+    const role = await prisma.role.createManyAndReturn({
+        data: [{ name: "ADMIN" }, { name: "USER" }],
+    });
 
-  const alice = await prisma.user.upsert({
-    where: { email: 'alice@example.com' },
-    update: {},
-    create: {
-      email: 'alice@example.com',
-      password: 'securepassword',
-      firstName: 'Alice',
-      lastName: 'Wonderland',
-      role: { connect: { id: adminRole.id } },
-    },
-  })
-  const bob = await prisma.user.upsert({
-    where: { email: 'bob@example.com' },
-    update: {},
-    create: {
-      email: 'bob@example.com',
-      password: 'securepassword',
-      firstName: 'Bob',
-      lastName: 'Builder',
-      role: { connect: { id: userRole.id } },
-    },
-  })
-  console.log('Upserted users:', { alice: alice.email, bob: bob.email })
+    console.log("Upserted roles:", {
+        adminRole: role[0]?.name,
+        userRole: role[1]?.name,
+    });
 
-  await prisma.article.upsert({
-    where: { id: 'seed-article-1' },
-    update: {
-      title: 'Welcome to Strive',
-      content: 'Kickstarting the platform with our first article.',
-      thumbnail: 'https://picsum.photos/seed/article1/400/250',
-      author: { connect: { id: alice.id } },
-    },
-    create: {
-      id: 'seed-article-1',
-      title: 'Welcome to Strive',
-      content: 'Kickstarting the platform with our first article.',
-      thumbnail: 'https://picsum.photos/seed/article1/400/250',
-      author: { connect: { id: alice.id } },
-    },
-  })
+    const user = await prisma.user.createManyAndReturn({
+        data: [
+            {
+                email: "alice@example.com",
+                password: "securepassword",
+                firstName: "Alice",
+                lastName: "Wonderland",
+                roleId: role[0]!.id,
+            },
+            {
+                email: "bob@example.com",
+                password: "securepassword",
+                firstName: "Bob",
+                lastName: "Builder",
+                roleId: role[1]!.id,
+            },
+        ],
+    });
+    console.log("Upserted users:", {
+        alice: user[0]?.email,
+        bob: user[1]?.email,
+    });
 
-  await prisma.article.upsert({
-    where: { id: 'seed-article-2' },
-    update: {
-      title: 'Productivity Tips',
-      content: null,
-      thumbnail: 'https://picsum.photos/seed/article2/400/250',
-      author: { connect: { id: bob.id } },
-    },
-    create: {
-      id: 'seed-article-2',
-      title: 'Productivity Tips',
-      content: null,
-      thumbnail: 'https://picsum.photos/seed/article2/400/250',
-      author: { connect: { id: bob.id } },
-    },
-  })
+    await prisma.article.createMany({
+        data: [
+            {
+                thumbnail: "https://picsum.photos/seed/article2/400/250",
+                title: "Getting Started with Strive",
+                content: "A comprehensive guide to get you started.",
+                authorId: user[0]!.id,
+            },
+            {
+                thumbnail: "https://picsum.photos/seed/article3/400/250",
+                title: "Top 10 Tips for Success",
+                content: "Boost your productivity with these tips.",
+                authorId: user[1]!.id,
+            },
+            {
+                thumbnail: "https://picsum.photos/seed/article4/400/250",
+                title: "Understanding the Dashboard",
+                content: "A deep dive into the features of your dashboard.",
+                authorId: user[1]!.id,
+            },
+        ],
+    });
 
-  await prisma.video.upsert({
-    where: { id: 'seed-video-1' },
-    update: {
-      title: 'Intro Walkthrough',
-      url: 'https://www.example.com/videos/intro',
-    },
-    create: {
-      id: 'seed-video-1',
-      title: 'Intro Walkthrough',
-      url: 'https://www.example.com/videos/intro',
-    },
-  })
+    await prisma.video.createMany({
+        data: [
+            {
+                title: "Intro Walkthrough",
+                url: "https://www.example.com/videos/intro",
+            },
+            {
+                title: "How To Use Strive",
+                url: "https://www.example.com/videos/how-to",
+            },
+        ],
+    });
 
-  await prisma.video.upsert({
-    where: { id: 'seed-video-2' },
-    update: {
-      title: 'How To Use Strive',
-      url: 'https://www.example.com/videos/how-to',
-    },
-    create: {
-      id: 'seed-video-2',
-      title: 'How To Use Strive',
-      url: 'https://www.example.com/videos/how-to',
-    },
-  })
+    await prisma.membership.createMany({
+        data: [
+            {
+                type: "PAKET A",
+                price: 100000,
+            },
+            {
+                type: "PAKET B",
+                price: 200000,
+            },
+            {
+                type: "PAKET C",
+                price: 300000,
+            },
+        ],
+    });
 
-  console.log('Seeding complete.')
+    await prisma.video.createMany({
+        data: [
+            {
+                id: "seed-video-2",
+                title: "How To Use Strive",
+                url: "https://www.example.com/videos/how-to",
+            },
+        ],
+    });
+
+    console.log("Seeding complete.");
 }
 
 main()
-  .catch((e) => {
-    console.error('Seeding failed:', e)
-    process.exit(1)
-  })
-  .finally(async () => {
-    await prisma.$disconnect()
-  })
+    .catch((e) => {
+        console.error("Seeding failed:", e);
+        process.exit(1);
+    })
+    .finally(async () => {
+        await prisma.$disconnect();
+    });
