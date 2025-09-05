@@ -5,7 +5,6 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('Seeding database to match current schema...')
 
-  // 1) Roles (unique by name)
   const adminRole = await prisma.role.upsert({
     where: { name: 'ADMIN' },
     update: {},
@@ -18,7 +17,6 @@ async function main() {
   })
   console.log('Upserted roles:', { adminRole: adminRole.name, userRole: userRole.name })
 
-  // 2) Users (must belong to a Role)
   const alice = await prisma.user.upsert({
     where: { email: 'alice@example.com' },
     update: {},
@@ -39,7 +37,6 @@ async function main() {
   })
   console.log('Upserted users:', { alice: alice.email, bob: bob.email })
 
-  // 3) Articles (thumbnail required, content optional, author optional)
   await prisma.article.upsert({
     where: { id: 'seed-article-1' },
     update: {
@@ -74,7 +71,6 @@ async function main() {
     },
   })
 
-  // 4) Videos
   await prisma.video.upsert({
     where: { id: 'seed-video-1' },
     update: {

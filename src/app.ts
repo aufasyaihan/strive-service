@@ -11,14 +11,12 @@ app.use(express.json());
 app.use("/article", articleRoutes);
 app.use("/video", videoRoutes);
 
-// 404 handler for unmatched routes -> return JSON instead of HTML
 app.use((req, res, next) => {
 	const err: AppError = new Error(`Not Found - ${req.originalUrl}`);
 	err.status = 404;
 	next(err);
 });
 
-// Global error handler (should be after routes)
 app.use(errorHandler);
 
 export default app;
