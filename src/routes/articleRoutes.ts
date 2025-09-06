@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { getAllArticles } from "../controllers/articleController";
+import { authenticateToken } from "../middleware/auth";
 
 const router = Router();
 
-router.get("/", getAllArticles)
+router.get("/",authenticateToken, getAllArticles)
 
 export default router;
