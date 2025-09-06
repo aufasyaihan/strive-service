@@ -66,44 +66,45 @@ export async function login(req: Request, res: Response) {
         });
         if (!user) {
             return res.status(400).json({
-                message: "Invalid email or password",
-                code: 400,
+                meta: {
+                    message: "Invalid email or password",
+                    code: 400,
+                },
             });
         }
         const isValidPassword = await bcrypt.compare(password, user.password);
         if (!isValidPassword) {
             return res.status(400).json({
-                message: "Invalid email or password",
-                code: 400,
+                meta: {
+                    message: "Invalid email or password",
+                    code: 400,
+                },
             });
         }
 
         // Generate JWT token
-        const token = generateToken({
+        const access_token = generateToken({
             userId: user.id,
             email: user.email,
             role: user.role.name,
         });
 
         res.status(200).json({
-            message: "Login successful",
-            code: 200,
+            meta: {
+                message: "Login successful",
+                code: 200,
+            },
             data: {
-                token,
-                user: {
-                    id: user.id,
-                    email: user.email,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    role: user.role.name,
-                },
+                access_token,
             },
         });
     } catch (error) {
         console.error("Error logging in user:", error);
         res.status(500).json({
-            message: "Internal server error",
-            code: 500,
+            meta: {
+                message: "Internal server error",
+                code: 500,
+            },
         });
     }
 }
@@ -113,8 +114,10 @@ export async function me(req: Request, res: Response) {
         const token = extractTokenFromHeader(req.headers.authorization);
         if (!token) {
             return res.status(401).json({
-                message: "Unauthorized",
-                code: 401,
+                meta: {
+                    message: "Unauthorized",
+                    code: 401,
+                },
             });
         }
 
@@ -138,8 +141,10 @@ export async function me(req: Request, res: Response) {
 
         if (!user) {
             return res.status(404).json({
-                message: "User not found",
-                code: 404,
+                meta: {
+                    message: "User not found",
+                    code: 404,
+                },
             });
         }
 
@@ -161,8 +166,10 @@ export async function me(req: Request, res: Response) {
     } catch (error) {
         console.error("Error getting user profile:", error);
         res.status(500).json({
-            message: "Internal server error",
-            code: 500,
+            meta: {
+                message: "Internal server error",
+                code: 500,
+            },
         });
     }
 }

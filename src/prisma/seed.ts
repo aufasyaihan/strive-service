@@ -1,9 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-
+import bcrypt from "bcrypt";
+const password = "12345678";
 const prisma = new PrismaClient();
 
 async function main() {
     console.log("Seeding database to match current schema...");
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     const role = await prisma.role.createManyAndReturn({
         data: [{ name: "ADMIN" }, { name: "USER" }],
@@ -18,14 +21,14 @@ async function main() {
         data: [
             {
                 email: "alice@example.com",
-                password: "securepassword",
+                password: hashedPassword,
                 firstName: "Alice",
                 lastName: "Wonderland",
                 roleId: role[0]!.id,
             },
             {
                 email: "bob@example.com",
-                password: "securepassword",
+                password: hashedPassword,
                 firstName: "Bob",
                 lastName: "Builder",
                 roleId: role[1]!.id,
