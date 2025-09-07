@@ -11,7 +11,7 @@ export async function getAllArticles(req: Request, res: Response) {
                 message: "success",
                 code: 200,
             },
-            articles,
+            data: [...articles],
         });
     } catch (error) {
         console.error("Error fetching articles:", error);

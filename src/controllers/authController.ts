@@ -34,7 +34,7 @@ export async function register(req: Request, res: Response) {
                 firstName: first_name,
                 lastName: last_name,
                 role: { connect: { name: "USER" } },
-                membership: { connect: { package: "A" } }
+                membership: { connect: { package: "A" } },
             },
         });
         res.status(201).json({
@@ -140,8 +140,8 @@ export async function me(req: Request, res: Response) {
                 membership: {
                     select: {
                         package: true,
-                    }
-                }
+                    },
+                },
             },
         });
 
@@ -160,14 +160,12 @@ export async function me(req: Request, res: Response) {
                 code: 200,
             },
             data: {
-                user: {
-                    id: user.id,
-                    email: user.email,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    role: user.role.name,
-                    membership: user.membership.package,
-                },
+                id: user.id,
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                role: user.role.name,
+                membership: user.membership.package,
             },
         });
     } catch (error) {

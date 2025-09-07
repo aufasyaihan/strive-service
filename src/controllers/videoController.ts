@@ -1,4 +1,4 @@
-import type { Request, Response } from 'express';
+import type { Request, Response } from "express";
 import prisma from "../config/db.config";
 
 export async function getAllVideos(req: Request, res: Response) {
@@ -9,7 +9,7 @@ export async function getAllVideos(req: Request, res: Response) {
                 message: "success",
                 code: 200,
             },
-            videos,
+            data: [...videos],
         });
     } catch (error) {
         console.error("Error fetching videos:", error);
