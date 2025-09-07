@@ -34,7 +34,7 @@ export async function register(req: Request, res: Response) {
                 firstName: first_name,
                 lastName: last_name,
                 role: { connect: { name: "USER" } },
-                membership: { connect: { type: "PAKET A" } }
+                membership: { connect: { package: "A" } }
             },
         });
         res.status(201).json({
@@ -137,6 +137,11 @@ export async function me(req: Request, res: Response) {
                         name: true,
                     },
                 },
+                membership: {
+                    select: {
+                        package: true,
+                    }
+                }
             },
         });
 
@@ -161,6 +166,7 @@ export async function me(req: Request, res: Response) {
                     firstName: user.firstName,
                     lastName: user.lastName,
                     role: user.role.name,
+                    membership: user.membership.package,
                 },
             },
         });

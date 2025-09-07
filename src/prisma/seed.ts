@@ -15,16 +15,13 @@ async function main() {
     const membership = await prisma.membership.createManyAndReturn({
         data: [
             {
-                type: "PAKET A",
-                price: 100000,
+                package: "A",
             },
             {
-                type: "PAKET B",
-                price: 200000,
+                package: "B",
             },
             {
-                type: "PAKET C",
-                price: 300000,
+                package: "C",
             },
         ],
     });
