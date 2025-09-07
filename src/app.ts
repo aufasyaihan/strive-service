@@ -9,6 +9,9 @@ const app = express();
 app.use(express.json());
 
 // Routes
+app.get("/", (req, res) => {
+    res.send("Welcome to the Strive Service API");
+});
 app.use("/auth", authRoutes);
 app.use("/article", articleRoutes);
 app.use("/video", videoRoutes);
