@@ -30,6 +30,10 @@ model Video {
   id          String   @id @default(cuid())
   title       String
   url         String
+  description String?
+  thumbnail   String
+  author      User    @relation(fields: [authorId], references: [id])
+  authorId    String
   updatedAt   DateTime @updatedAt
   publishedAt DateTime @default(now())
 
@@ -45,6 +49,7 @@ model User {
   role      Role      @relation(fields: [roleId], references: [id])
   roleId    String
   articles  Article[]
+  videos    Video[]
 
   @@index([id])
 }

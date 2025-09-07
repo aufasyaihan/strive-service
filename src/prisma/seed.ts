@@ -68,10 +68,16 @@ async function main() {
             {
                 title: "Intro Walkthrough",
                 url: "https://www.example.com/videos/intro",
+                description: "An introductory walkthrough of the Strive platform.",
+                thumbnail: "https://picsum.photos/seed/video1/400/250",
+                authorId: user[0]!.id,
             },
             {
                 title: "How To Use Strive",
                 url: "https://www.example.com/videos/how-to",
+                description: "A comprehensive guide on how to use the Strive platform.",
+                thumbnail: "https://picsum.photos/seed/video2/400/250",
+                authorId: user[1]!.id,
             },
         ],
     });
@@ -89,16 +95,6 @@ async function main() {
             {
                 type: "PAKET C",
                 price: 300000,
-            },
-        ],
-    });
-
-    await prisma.video.createMany({
-        data: [
-            {
-                id: "seed-video-2",
-                title: "How To Use Strive",
-                url: "https://www.example.com/videos/how-to",
             },
         ],
     });
