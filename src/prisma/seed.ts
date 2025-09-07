@@ -12,9 +12,21 @@ async function main() {
         data: [{ name: "ADMIN" }, { name: "USER" }],
     });
 
-    console.log("Upserted roles:", {
-        adminRole: role[0]?.name,
-        userRole: role[1]?.name,
+    const membership = await prisma.membership.createManyAndReturn({
+        data: [
+            {
+                type: "PAKET A",
+                price: 100000,
+            },
+            {
+                type: "PAKET B",
+                price: 200000,
+            },
+            {
+                type: "PAKET C",
+                price: 300000,
+            },
+        ],
     });
 
     const user = await prisma.user.createManyAndReturn({
@@ -25,6 +37,7 @@ async function main() {
                 firstName: "Alice",
                 lastName: "Wonderland",
                 roleId: role[0]!.id,
+                membershipId: membership[0]!.id,
             },
             {
                 email: "bob@example.com",
@@ -32,12 +45,9 @@ async function main() {
                 firstName: "Bob",
                 lastName: "Builder",
                 roleId: role[1]!.id,
+                membershipId: membership[1]!.id,
             },
         ],
-    });
-    console.log("Upserted users:", {
-        alice: user[0]?.email,
-        bob: user[1]?.email,
     });
 
     await prisma.article.createMany({
@@ -78,23 +88,6 @@ async function main() {
                 description: "A comprehensive guide on how to use the Strive platform.",
                 thumbnail: "https://picsum.photos/seed/video2/400/250",
                 authorId: user[1]!.id,
-            },
-        ],
-    });
-
-    await prisma.membership.createMany({
-        data: [
-            {
-                type: "PAKET A",
-                price: 100000,
-            },
-            {
-                type: "PAKET B",
-                price: 200000,
-            },
-            {
-                type: "PAKET C",
-                price: 300000,
             },
         ],
     });

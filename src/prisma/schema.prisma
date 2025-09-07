@@ -50,6 +50,8 @@ model User {
   roleId    String
   articles  Article[]
   videos    Video[]
+  membership Membership @relation(fields: [membershipId], references: [id])
+  membershipId String
 
   @@index([id])
 }
@@ -62,6 +64,7 @@ model Role {
 
 model Membership {
   id    String @id @default(cuid())
-  type  String
+  type  String @unique
   price Float
+  users User[]
 }
