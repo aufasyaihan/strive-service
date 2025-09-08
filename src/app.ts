@@ -1,10 +1,23 @@
 import express from "express";
+import cors from "cors";
 import articleRoutes from "./routes/articleRoutes";
 import videoRoutes from "./routes/videoRoutes";
 import { errorHandler, type AppError } from "./middleware/errorHandler";
 import authRoutes from "./routes/authRoutes";
 
 const app = express();
+
+// CORS configuration
+app.use(cors({
+    origin: [
+        'http://localhost:3000',
+        'http://127.0.0.1:3000',
+        'https://strive-fe.vercel.app'
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with']
+}));
 
 app.use(express.json());
 

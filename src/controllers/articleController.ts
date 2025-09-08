@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import prisma from "../config/db.config";
+import { checkMembershipLimits, incrementUsageCount } from "../utils/membership";
 
 export async function getAllArticles(req: Request, res: Response) {
     try {
@@ -61,6 +62,7 @@ export async function getArticleById(req: Request, res: Response) {
                 },
             },
         });
+        
         if (!article) {
             return res.status(404).json({
                 meta: {
@@ -69,12 +71,27 @@ export async function getArticleById(req: Request, res: Response) {
                 },
             });
         }
+
+        // Increment usage count (middleware already checked access)
+        await incrementUsageCount(req.user!.userId, 'article');
+
+        // Get updated membership limits
+        const updatedLimits = await checkMembershipLimits(req.user!.userId);
+
         res.json({
             meta: {
                 message: "success",
                 code: 200,
             },
-            data: article,
+            data: {
+                ...article,
+                membershipInfo: {
+                    currentPlan: updatedLimits.currentPlan,
+                    articlesRemaining: updatedLimits.articlesRemaining === null 
+                        ? 'unlimited' 
+                        : updatedLimits.articlesRemaining,
+                },
+            },
         });
     } catch (error) {
         console.error("Error fetching article:", error);

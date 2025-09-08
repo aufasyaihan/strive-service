@@ -1,10 +1,12 @@
 import type { Request, Response, NextFunction } from 'express';
 import { verifyToken, extractTokenFromHeader, JwtPayload } from '../utils/jwt';
+import { MembershipLimits } from '../utils/membership';
 
 declare global {
   namespace Express {
     interface Request {
       user?: JwtPayload | undefined;
+      membershipLimits?: MembershipLimits | undefined;
     }
   }
 }

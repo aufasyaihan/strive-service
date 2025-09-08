@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import prisma from "../config/db.config";
+import { checkMembershipLimits, incrementUsageCount } from "../utils/membership";
 
 export async function getAllVideos(req: Request, res: Response) {
     try {
@@ -61,6 +62,7 @@ export async function getVideoById(req: Request, res: Response) {
                 },
             },
         });
+        
         if (!video) {
             return res.status(404).json({
                 meta: {
@@ -69,12 +71,27 @@ export async function getVideoById(req: Request, res: Response) {
                 },
             });
         }
+
+        // Increment usage count (middleware already checked access)
+        await incrementUsageCount(req.user!.userId, 'video');
+
+        // Get updated membership limits
+        const updatedLimits = await checkMembershipLimits(req.user!.userId);
+
         res.json({
             meta: {
                 message: "success",
                 code: 200,
             },
-            data: video,
+            data: {
+                ...video,
+                membershipInfo: {
+                    currentPlan: updatedLimits.currentPlan,
+                    videosRemaining: updatedLimits.videosRemaining === null 
+                        ? 'unlimited' 
+                        : updatedLimits.videosRemaining,
+                },
+            },
         });
     } catch (error) {
         console.error("Error fetching video:", error);

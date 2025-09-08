@@ -6,6 +6,7 @@ import {
     generateToken,
     verifyToken,
 } from "../utils/jwt";
+import { checkMembershipLimits } from "../utils/membership";
 
 export async function register(req: Request, res: Response) {
     const { email, password, first_name, last_name } = req.body;
@@ -132,6 +133,8 @@ export async function me(req: Request, res: Response) {
                 email: true,
                 firstName: true,
                 lastName: true,
+                articlesCount: true,
+                videosCount: true,
                 role: {
                     select: {
                         name: true,
@@ -166,6 +169,8 @@ export async function me(req: Request, res: Response) {
                 lastName: user.lastName,
                 role: user.role.name,
                 membership: user.membership.package,
+                articlesCount: user.articlesCount,
+                videosCount: user.videosCount,
             },
         });
     } catch (error) {
@@ -178,3 +183,120 @@ export async function me(req: Request, res: Response) {
         });
     }
 }
+
+export async function getMembershipInfo(req: Request, res: Response) {
+    if (!req.user) {
+        return res.status(401).json({
+            meta: {
+                message: "Authentication required",
+                code: 401,
+            },
+        });
+    }
+
+    try {
+        const membershipLimits = await checkMembershipLimits(req.user.userId);
+        
+        res.status(200).json({
+            meta: {
+                message: "Membership info retrieved successfully",
+                code: 200,
+            },
+            data: membershipLimits,
+        });
+    } catch (error) {
+        console.error("Error getting membership info:", error);
+        res.status(500).json({
+            meta: {
+                message: "Internal server error",
+                code: 500,
+            },
+        });
+    }
+}
+
+export async function updateMembership(req: Request, res: Response) {
+    if (!req.user) {
+        return res.status(401).json({
+            meta: {
+                message: "Authentication required",
+                code: 401,
+            },
+        });
+    }
+
+    const { membershipPackage } = req.body;
+
+    if (!membershipPackage) {
+        return res.status(400).json({
+            meta: {
+                message: "Membership package is required",
+                code: 400,
+            },
+        });
+    }
+
+    const validPackages = ["A", "B", "C"];
+    if (!validPackages.includes(membershipPackage)) {
+        return res.status(400).json({
+            meta: {
+                message: "Invalid membership package. Valid packages are: A, B, C",
+                code: 400,
+            },
+        });
+    }
+
+    try {
+        const membership = await prisma.membership.findUnique({
+            where: { package: membershipPackage },
+        });
+
+        if (!membership) {
+            return res.status(404).json({
+                meta: {
+                    message: "Membership package not found",
+                    code: 404,
+                },
+            });
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: { id: req.user.userId },
+            data: {
+                membershipId: membership.id,
+                articlesCount: 0,
+                videosCount: 0,
+            },
+            include: {
+                membership: true,
+                role: true,
+            },
+        });
+
+        res.status(200).json({
+            meta: {
+                message: "Membership updated successfully",
+                code: 200,
+            },
+            data: {
+                id: updatedUser.id,
+                email: updatedUser.email,
+                firstName: updatedUser.firstName,
+                lastName: updatedUser.lastName,
+                role: updatedUser.role.name,
+                membership: updatedUser.membership.package,
+                articlesCount: updatedUser.articlesCount,
+                videosCount: updatedUser.videosCount,
+            },
+        });
+    } catch (error) {
+        console.error("Error updating membership:", error);
+        res.status(500).json({
+            meta: {
+                message: "Internal server error",
+                code: 500,
+            },
+        });
+    }
+}
+

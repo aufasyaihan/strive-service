@@ -52,6 +52,8 @@ model User {
   videos       Video[]
   membership   Membership @relation(fields: [membershipId], references: [id])
   membershipId String
+  articlesCount Int       @default(0)
+  videosCount   Int       @default(0)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 
@@ -67,7 +69,9 @@ model Role {
 }
 
 model Membership {
-  id      String @id @default(cuid())
-  package String @unique
-  users   User[]
+  id           String @id @default(cuid())
+  package      String @unique
+  articleLimit Int?   // null means unlimited
+  videoLimit   Int?   // null means unlimited
+  users        User[]
 }
