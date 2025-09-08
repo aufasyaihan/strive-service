@@ -7,7 +7,6 @@ export async function checkArticleAccess(
     next: NextFunction
 ): Promise<void> {
     try {
-        // Check if user is authenticated
         if (!req.user) {
             res.status(401).json({
                 meta: {
@@ -18,7 +17,6 @@ export async function checkArticleAccess(
             return;
         }
 
-        // Check membership limits for articles
         const membershipLimits = await checkMembershipLimits(req.user.userId);
         
         if (!membershipLimits.canAccessArticle) {
@@ -35,7 +33,6 @@ export async function checkArticleAccess(
             return;
         }
 
-        // Store membership info in request for later use
         req.membershipLimits = membershipLimits;
         next();
     } catch (error) {
@@ -55,7 +52,6 @@ export async function checkVideoAccess(
     next: NextFunction
 ): Promise<void> {
     try {
-        // Check if user is authenticated
         if (!req.user) {
             res.status(401).json({
                 meta: {
@@ -66,7 +62,6 @@ export async function checkVideoAccess(
             return;
         }
 
-        // Check membership limits for videos
         const membershipLimits = await checkMembershipLimits(req.user.userId);
         
         if (!membershipLimits.canAccessVideo) {
@@ -83,7 +78,6 @@ export async function checkVideoAccess(
             return;
         }
 
-        // Store membership info in request for later use
         req.membershipLimits = membershipLimits;
         next();
     } catch (error) {

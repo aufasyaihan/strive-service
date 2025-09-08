@@ -72,10 +72,8 @@ export async function getArticleById(req: Request, res: Response) {
             });
         }
 
-        // Increment usage count (middleware already checked access)
         await incrementUsageCount(req.user!.userId, 'article');
 
-        // Get updated membership limits
         const updatedLimits = await checkMembershipLimits(req.user!.userId);
 
         res.json({

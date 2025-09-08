@@ -71,7 +71,7 @@ model Role {
 model Membership {
   id           String @id @default(cuid())
   package      String @unique
-  articleLimit Int?   // null means unlimited
-  videoLimit   Int?   // null means unlimited
+  articleLimit Int?
+  videoLimit   Int?
   users        User[]
 }

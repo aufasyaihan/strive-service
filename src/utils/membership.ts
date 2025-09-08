@@ -3,8 +3,8 @@ import prisma from '../config/db.config';
 export interface MembershipLimits {
     canAccessArticle: boolean;
     canAccessVideo: boolean;
-    articlesRemaining: number | null; // null means unlimited
-    videosRemaining: number | null; // null means unlimited
+    articlesRemaining: number | null;
+    videosRemaining: number | null;
     currentPlan: string;
 }
 
@@ -31,13 +31,11 @@ export async function checkMembershipLimits(userId: string): Promise<MembershipL
         videosCount
     });
     
-    // Check article access
     const canAccessArticle = membership.articleLimit === null || articlesCount < membership.articleLimit;
     const articlesRemaining = membership.articleLimit === null 
         ? null 
         : Math.max(0, membership.articleLimit - articlesCount);
 
-    // Check video access
     const canAccessVideo = membership.videoLimit === null || videosCount < membership.videoLimit;
     const videosRemaining = membership.videoLimit === null 
         ? null 
