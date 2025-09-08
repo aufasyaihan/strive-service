@@ -74,14 +74,14 @@ async function main() {
         data: [
             {
                 title: "Intro Walkthrough",
-                url: "https://www.example.com/videos/intro",
+                url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
                 description: "An introductory walkthrough of the Strive platform.",
                 thumbnail: "https://picsum.photos/seed/video1/400/250",
                 authorId: user[0]!.id,
             },
             {
                 title: "How To Use Strive",
-                url: "https://www.example.com/videos/how-to",
+                url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
                 description: "A comprehensive guide on how to use the Strive platform.",
                 thumbnail: "https://picsum.photos/seed/video2/400/250",
                 authorId: user[1]!.id,
